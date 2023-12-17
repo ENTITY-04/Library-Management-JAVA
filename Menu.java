@@ -88,6 +88,7 @@ public class Menu {
 
 class Booking {
   static Scanner console = new Scanner(System.in);
+
   private static List<Seat> seats;
 
   public Booking() {
@@ -140,6 +141,7 @@ class Booking {
         seatFound.add(R);
       }
     }
+
     if (seatFound.isEmpty()) {
       for (Seat R : seats) {
         if (R.seatClass.equals(desiredClass) && R.email.equals("free")) {
@@ -149,9 +151,11 @@ class Booking {
       }
       System.out.println("\nNo Match Seat Found, Above Are The Available Seat");
     }
+
     while (!seatFound.isEmpty()) {
       System.out.print("\nEnter a Seat Number to Reserve Seat : ");
       desireSeat = console.next().toUpperCase();
+
       for (Seat P : seatFound) {
         if (P.seatNum.equals(desireSeat) && P.email.equals("free")) {
           P.email = email;
@@ -178,6 +182,7 @@ class Booking {
         Found = true;
       }
     }
+
     if (!Found) {
       System.out.println("\nNo Seat Found With This Email");
       return;
@@ -186,6 +191,7 @@ class Booking {
     while (Found) {
       System.out.print("\nEnter Your Seat Number : ");
       num = console.next().toUpperCase();
+
       for (Seat C : seats) {
         if (C.seatNum.equals(num) && C.email.equals(inputEmail)) {
           C.email = "free";
