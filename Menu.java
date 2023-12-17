@@ -1,13 +1,12 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Menu {
-
   static Scanner console = new Scanner(System.in);
 
   public static void main(String[] args) {
     Booking Sys = new Booking();
-    String Email, desiredClass, Input;
+    String Email, desiredClass;
     boolean Window, Aisle, Table;
     double Price = 0;
 
@@ -25,9 +24,7 @@ public class Menu {
           Email = console.next();
 
           while (true) {
-            System.out.print(
-              "Do Your Prefer Standard Class [STD] or First Class [1ST]: "
-            );
+            System.out.print("Do Your Prefer Standard Class [STD] or First Class [1ST]: ");
             desiredClass = console.next().toUpperCase();
             if (desiredClass.equals("STD") || desiredClass.equals("1ST")) {
               break;
@@ -55,16 +52,20 @@ public class Menu {
           }
           Sys.reserveSeat(Email, desiredClass, Window, Aisle, Table, Price);
           break;
+
         case "2":
           Sys.cancelSeat();
           break;
+
         case "3":
           Sys.viewSeat();
           break;
+
         case "Q":
           System.out.println("\nShutting Down, GoodBye");
           System.exit(0);
           break;
+
         default:
           System.out.println("\nInvalid Input\n");
       }
@@ -86,7 +87,6 @@ public class Menu {
 }
 
 class Booking {
-
   static Scanner console = new Scanner(System.in);
   private static List<Seat> seats;
 
@@ -112,17 +112,7 @@ class Booking {
       double seatPrice = Double.parseDouble(read.next());
       String email = read.next();
 
-      seats.add(
-        new Seat(
-          seatNum,
-          seatClass,
-          isWindow,
-          isAisle,
-          isTable,
-          seatPrice,
-          email
-        )
-      );
+      seats.add(new Seat(seatNum, seatClass, isWindow, isAisle, isTable, seatPrice, email));
     }
     read.close();
   }
@@ -137,27 +127,15 @@ class Booking {
     }
   }
 
-  public void reserveSeat(
-    String email,
-    String desiredClass,
-    boolean window,
-    boolean aisle,
-    boolean table,
-    double price
-  ) {
+  public void reserveSeat(String email, String desiredClass, boolean window, boolean aisle, boolean table,
+      double price) {
     String desireSeat;
     List<Seat> seatFound = new ArrayList<>();
 
     System.out.println("\n" + Seat.header());
     for (Seat R : seats) {
-      if (
-        R.seatClass.equals(desiredClass) &&
-        R.isWindow == window &&
-        R.isAisle == aisle &&
-        R.isTable == table &&
-        R.seatPrice <= price &&
-        R.email.equals("free")
-      ) {
+      if (R.seatClass.equals(desiredClass) && R.isWindow == window && R.isAisle == aisle && R.isTable == table
+          && R.seatPrice <= price && R.email.equals("free")) {
         System.out.println(R);
         seatFound.add(R);
       }
@@ -177,12 +155,12 @@ class Booking {
       for (Seat P : seatFound) {
         if (P.seatNum.equals(desireSeat) && P.email.equals("free")) {
           P.email = email;
-          System.out.println("Seat Reserved Succesfully");
+          System.out.println("Seat Reserved Successfully");
           Save("seats.txt");
           return;
         }
       }
-      System.out.println("Inavlid Seat Number");
+      System.out.println("Invalid Seat Number");
     }
   }
 
@@ -225,9 +203,7 @@ class Booking {
     boolean emailView = false;
 
     while (true) {
-      System.out.print(
-        "View Personal Seat Reservation or All Seat Reservation [P|ALL]: "
-      );
+      System.out.print("View Personal Seat Reservation or All Seat Reservation [P|ALL]: ");
       viewOption = console.next();
 
       if (viewOption.equalsIgnoreCase("All")) {
@@ -261,7 +237,6 @@ class Booking {
 }
 
 class Seat {
-
   public String seatNum;
   public String seatClass;
   public boolean isWindow;
@@ -270,15 +245,8 @@ class Seat {
   public double seatPrice;
   public String email;
 
-  public Seat(
-    String seatNum,
-    String seatClass,
-    boolean isWindow,
-    boolean isAisle,
-    boolean isTable,
-    double seatPrice,
-    String email
-  ) {
+  public Seat(String seatNum, String seatClass, boolean isWindow, boolean isAisle, boolean isTable, double seatPrice,
+      String email) {
     this.seatNum = seatNum;
     this.seatClass = seatClass;
     this.isWindow = isWindow;
@@ -289,32 +257,11 @@ class Seat {
   }
 
   public static String header() {
-    return (
-      "SEAT\t" +
-      "CLASS\t" +
-      " WINDOW\t" +
-      " AISLE\t" +
-      " TABLE\t" +
-      " PRICE\t" +
-      " EMAIL\t"
-    );
+    return "SEAT\t" + "CLASS\t" + " WINDOW\t" + " AISLE\t" + " TABLE\t" + " PRICE\t" + " EMAIL\t";
   }
 
   public String toString() {
-    return (
-      seatNum +
-      "\t " +
-      seatClass +
-      "\t " +
-      isWindow +
-      "\t " +
-      isAisle +
-      "\t " +
-      isTable +
-      "\t " +
-      seatPrice +
-      "\t " +
-      email
-    );
+    return seatNum + "\t " + seatClass + "\t " + isWindow + "\t " + isAisle + "\t " + isTable + "\t " + seatPrice
+        + "\t " + email;
   }
 }
