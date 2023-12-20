@@ -7,16 +7,15 @@ public class Receipt_V1 {
   public static void main(String[] args) {
     Scanner console = new Scanner(System.in);
 
-    // Variable for Date, Time and Tax Number
+    // Variable for Date, Time and Invoice Number
     LocalDateTime now = LocalDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-        "yyyy-MM-dd HH:mm:ss");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String newDateTime = now.format(formatter);
     Random num = new Random();
     int taxNum = num.nextInt(9000);
 
+    // Variable for total, and payment
     double totalPrice = 0.0, subTotal = 0.0, tax = 0.0, finalTotal = 0.0;
-
     double cash = 0.0;
     String payPlatform, paymentMethod;
 
@@ -29,8 +28,7 @@ public class Receipt_V1 {
     List<Double> prices = new ArrayList<>();
 
     System.out.println("WELCOME");
-    System.out.println(
-        "Please enter your items details below. Type [OK] once finish");
+    System.out.println("Please enter your items details below. Type [OK] once finish");
 
     while (true) {
       System.out.print("Item Name: ");
@@ -76,15 +74,12 @@ public class Receipt_V1 {
       prices.add(price);
     }
 
-    // This section is for payment method input
+    // This section is for payment method
     while (true) {
       System.out.print("Please Specify Payment Method [CASH / CASHLESS]: ");
       paymentMethod = console.nextLine();
 
-      if (paymentMethod.equalsIgnoreCase("Cash") ||
-          paymentMethod.equalsIgnoreCase("Cashs")) {
-        break;
-      } else if (paymentMethod.equalsIgnoreCase("Cashless")) {
+      if (paymentMethod.equalsIgnoreCase("Cash") || paymentMethod.equalsIgnoreCase("Cashless")) {
         break;
       } else {
         System.out.println("Please Re-enter Payment Method");
@@ -92,28 +87,23 @@ public class Receipt_V1 {
     }
 
     // This section is for receipt layout
-    System.out.println();
-    System.out.println("  Cyberjaya Mall SDN BHD (00127)");
-    System.out.println(" No 7, Desa Maju, 57100 Cyberjaya");
-    System.out.println();
+    System.out.println("\n  Cyberjaya Mall SDN BHD (00127)");
+    System.out.println(" No 7, Desa Maju, 57100 Cyberjaya\n");
+
     // taxNum is used for random tax number
     System.out.println("        Tax Invoice " + taxNum);
     System.out.println("-----------------------------------");
 
-    /*
-     * why use .size? Because its a array list not normal array
-     * why have -1? Because to not print the OK for checkout loop
-     */
+    // -1 is to to not print the "OK" for checkout loop
     for (int index = 0; index < items.size() - 1; index++) {
       totalPrice = prices.get(index) * qtys.get(index);
 
-      // %-12s is for the padding % for printf, -12 for size of padding, s for string
-      // in printf
       System.out.printf("%-12s *%-2d RM%-2.2f ~ RM%-2.2f%n", items.get(index), qtys.get(index), prices.get(index),
           totalPrice);
       subTotal += totalPrice;
     }
 
+    // This section display the final total price
     System.out.println("-----------------------------------");
     System.out.printf("%-27s RM%.2f%n", "Subtotal:", subTotal);
     System.out.printf("%-27s RM%.2f%n", "Tax 6%:", (tax = (subTotal * 0.06)));
@@ -121,8 +111,7 @@ public class Receipt_V1 {
     System.out.println();
 
     while (true) {
-      if (paymentMethod.equalsIgnoreCase("Cash") ||
-          paymentMethod.equalsIgnoreCase("Cashs")) {
+      if (paymentMethod.equalsIgnoreCase("Cash")) {
         System.out.printf("%-27s RM", "CASH:");
         cash = console.nextDouble();
 
@@ -142,14 +131,11 @@ public class Receipt_V1 {
     }
 
     System.out.println("-----------------------------------");
-    /*
-     * Why not using the padding method for printing the date and time?
-     * Idk, I tried but does not work
-     */
+
     System.out.println("        " + newDateTime);
     System.out.println();
     System.out.println(
-        "            Thank You\n  For Shopping At Cyberjaya Mall\n        Please Come Again");
+        "\t    Thank You\n  For Shopping At Cyberjaya Mall\n\tPlease Come Again\n");
     console.close();
   }
 }
