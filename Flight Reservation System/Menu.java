@@ -128,13 +128,15 @@ class Booking {
     }
   }
 
-  public void reserveSeat(String email, String desiredClass, boolean window, boolean aisle, boolean table, double price) {
+  public void reserveSeat(String email, String desiredClass, boolean window, boolean aisle, boolean table,
+      double price) {
     String desireSeat;
     List<Seat> seatFound = new ArrayList<>();
 
     System.out.println("\n" + Seat.header());
     for (Seat R : seats) {
-      if (R.seatClass.equals(desiredClass) && R.isWindow == window && R.isAisle == aisle && R.isTable == table && R.seatPrice <= price && R.email.equals("free")) {
+      if (R.seatClass.equals(desiredClass) && R.isWindow == window && R.isAisle == aisle && R.isTable == table
+          && R.seatPrice <= price && R.email.equals("free")) {
         System.out.println(R);
         seatFound.add(R);
       }
@@ -249,7 +251,8 @@ class Seat {
   public double seatPrice;
   public String email;
 
-  public Seat(String seatNum, String seatClass, boolean isWindow, boolean isAisle, boolean isTable, double seatPrice, String email) {
+  public Seat(String seatNum, String seatClass, boolean isWindow, boolean isAisle, boolean isTable, double seatPrice,
+      String email) {
     this.seatNum = seatNum;
     this.seatClass = seatClass;
     this.isWindow = isWindow;
@@ -264,6 +267,7 @@ class Seat {
   }
 
   public String toString() {
-    return seatNum + "\t " + seatClass + "\t " + isWindow + "\t " + isAisle + "\t " + isTable + "\t " + seatPrice + "\t " + email;
+    return seatNum + "\t " + seatClass + "\t " + isWindow + "\t " + isAisle + "\t " + isTable + "\t " + seatPrice
+        + "\t " + email;
   }
 }
