@@ -1,0 +1,12 @@
+Book1
+A
+Comedy, Fantasy
+1122
+AVAILABLE
+NONE
+Book2
+B
+Romance
+3333
+AVAILABLE
+NONE

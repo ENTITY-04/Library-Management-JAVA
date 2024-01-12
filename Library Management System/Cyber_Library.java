@@ -5,6 +5,8 @@ public class Cyber_Library {
     public static void main(String[] args) throws IOException {
         Book bookInterface = new Book();
         Patron patronInterface = new Patron();
+        ReturnBook returnInterface = new ReturnBook();
+        Management managementInterface = new Management();
         Scanner console = new Scanner(System.in);
 
         while (true) {
@@ -21,9 +23,11 @@ public class Cyber_Library {
                     break;
 
                 case "3":
+                    returnInterface.returnBookInterface();
                     break;
 
                 case "4":
+                    managementInterface.managerInterface();
                     break;
 
                 case "5":
@@ -46,12 +50,6 @@ class Book {
     public String availability;
     public String patron;
 
-    private List<Book> books;
-
-    public Book() {
-        this.books = new ArrayList<>();
-    }
-
     public Book(String title, String author, String genre, String ISBN, String availability, String patron) {
         this.title = title;
         this.author = author;
@@ -61,11 +59,21 @@ class Book {
         this.patron = patron;
     }
 
+    private List<Book> books;
+
+    public Book() {
+        this.books = new ArrayList<>();
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
     static Scanner console = new Scanner(System.in);
 
     private void bookList() throws FileNotFoundException {
-        FileReader bookinput = new FileReader("book.txt");
-        Scanner book = new Scanner(bookinput);
+        FileReader bookInput = new FileReader("book.txt");
+        Scanner book = new Scanner(bookInput);
 
         while (book.hasNextLine()) {
             String title = book.nextLine();
@@ -94,39 +102,41 @@ class Book {
     public void viewBookInterfaces() throws IOException {
         Patron patronsList = new Patron();
         List<Patron> patrons = patronsList.getPatrons();
-        List<Book> newBookList = new ArrayList<>();
-        String searchInput, borrowInput, patronName, patronID;
 
-        System.out.println("Would You like to \n 1.Search for Book \n 2.View All Book \nEnter [1/2]");
+        List<Book> newBookList = new ArrayList<>();
+        String search, borrow, patronName, patronID;
+
+        System.out.println("Would You like to \n 1.Search For Book \n 2.View All Book \nEnter [1/2]");
 
         while (true) {
             switch (console.nextLine()) {
                 case "1":
                     System.out.println("Enter Book Name / Book ISBN : ");
-                    searchInput = console.nextLine();
+                    search = console.nextLine();
                     for (Book bookSearch : books) {
-                        if (bookSearch.title.equalsIgnoreCase(searchInput)
-                                || bookSearch.ISBN.equalsIgnoreCase(searchInput)) {
+                        if (bookSearch.title.equalsIgnoreCase(search)
+                                || bookSearch.ISBN.equalsIgnoreCase(search)) {
                             System.out.println(bookSearch);
                             newBookList.add(bookSearch);
                         }
                     }
 
-                    for (Book bookAvaibility : newBookList) {
-                        if (bookAvaibility.availability.equals("AVAILABLE")) {
+                    for (Book bookAvailability : newBookList) {
+                        if (!newBookList.isEmpty() && bookAvailability.availability.equals("AVAILABLE")) {
                             System.out.print("Would you like to borrow this book? [Y/N] : ");
-                            borrowInput = console.next();
+                            borrow = console.next();
 
-                            if (borrowInput.equalsIgnoreCase("Y") || borrowInput.equalsIgnoreCase("Yes")) {
+                            if (borrow.equalsIgnoreCase("Y") || borrow.equalsIgnoreCase("Yes")) {
                                 System.out.print("Please enter your Patron Name : ");
                                 patronName = console.next();
                                 System.out.print("Please enter your Patron ID : ");
                                 patronID = console.next();
 
                                 while (true) {
-                                    for (Patron checkPatron : patrons) {
-                                        if (checkPatron.equals(patronName) && checkPatron.equals(patronID)) {
-                                            bookAvaibility.availability = "Unavailable";
+                                    for (Patron patronVerify : patrons) {
+                                        if (patronVerify.equals(patronName) && patronVerify.equals(patronID)) {
+                                            bookAvailability.availability = "Unavailable";
+                                            bookAvailability.patron = patronName;
                                             System.out.println("Enjoy the Book");
                                             saveBook("book.txt");
                                             return;
@@ -156,7 +166,12 @@ class Patron {
     public String name;
     public String email;
     public int ID;
-    public double fines;
+
+    public Patron(String name, String email, int ID) {
+        this.name = name;
+        this.email = email;
+        this.ID = ID;
+    }
 
     private List<Patron> patrons;
 
@@ -166,13 +181,6 @@ class Patron {
 
     public List<Patron> getPatrons() {
         return patrons;
-    }
-
-    public Patron(String name, String email, int ID, double fines) {
-        this.name = name;
-        this.email = email;
-        this.ID = ID;
-        this.fines = fines;
     }
 
     static Scanner console = new Scanner(System.in);
@@ -185,9 +193,8 @@ class Patron {
             String name = patron.nextLine();
             String email = patron.nextLine();
             int ID = Integer.parseInt(patron.nextLine());
-            double fines = Double.parseDouble(patron.nextLine());
 
-            patrons.add(new Patron(name, email, ID, fines));
+            patrons.add(new Patron(name, email, ID));
         }
     }
 
@@ -199,7 +206,7 @@ class Patron {
     }
 
     public String toString() {
-        return "Name : " + name + "\nID : " + ID + "\nE-mail : " + email + "\nFines : " + fines;
+        return "Name : " + name + "\nID : " + ID + "\nE-mail : " + email;
     }
 
     public void patronAccountinterface() throws IOException {
@@ -221,12 +228,11 @@ class Patron {
                     while (true) {
                         for (Patron emailChecker : patrons) {
                             if (!emailChecker.email.equals(newEmail)) {
-                                System.out.println("Email already exists");
                                 System.out.print("Your Patron ID is " + newID);
-
-                                Patron newPatron = new Patron(newName, newEmail, newID, 0.0);
-
+                                Patron newPatron = new Patron(newName, newEmail, newID);
+                                System.out.print("Patron Account created Successfully");
                                 savePatron(newPatron);
+                                return;
                             }
                         }
                         System.out.println("Email already exists, Please try again");
@@ -237,12 +243,11 @@ class Patron {
                     System.out.print("Please enter your Patron ID : ");
                     patronID = console.nextInt();
 
-                    for (Patron accountVerify : patrons) {
-                        if (accountVerify.name.equals(patronName) && accountVerify.ID == patronID) {
-                            System.out.println("Name : " + accountVerify.name);
-                            System.out.println("ID : " + accountVerify.ID);
-                            System.out.println("E-mail : " + accountVerify.email);
-                            System.out.println("Fines : " + accountVerify.fines);
+                    for (Patron patronVerify : patrons) {
+                        if (patronVerify.name.equals(patronName) && patronVerify.ID == patronID) {
+                            System.out.println("Name : " + patronVerify.name);
+                            System.out.println("ID : " + patronVerify.ID);
+                            System.out.println("E-mail : " + patronVerify.email);
                         }
                     }
                     break;
@@ -254,10 +259,224 @@ class Patron {
     }
 }
 
-class Transaction {
+class ReturnBook {
 
+    public ReturnBook() {
+    }
+
+    static Scanner console = new Scanner(System.in);
+
+    public void returnBookInterface() throws IOException {
+        Book bookInterface = new Book();
+        Patron patronsList = new Patron();
+        List<Patron> patrons = patronsList.getPatrons();
+
+        Book booksList = new Book();
+        List<Book> books = booksList.getBooks();
+
+        List<Book> newBookList = new ArrayList<>();
+
+        String patronName, confirmation;
+        int patronID = 0, bookCounter = 0, returnBookNum = 0;
+
+        System.out.print("Please enter your Patron name : ");
+        patronName = console.next();
+        System.out.print("Please enter your Patron ID : ");
+        patronID = console.nextInt();
+
+        for (Patron patronVerify : patrons) {
+            if (patronVerify.name.equals(patronName) && patronVerify.ID == patronID) {
+                for (Book borrowedBook : books) {
+                    if (borrowedBook.patron.equals(patronName)) {
+                        System.out.println("Borrowed Book : \n" + bookCounter + ". " + borrowedBook);
+                        newBookList.add(borrowedBook);
+                        bookCounter++;
+                    }
+                }
+            }
+        }
+        while (true) {
+            System.out.print("Do you want to return the book [Y/N] : ");
+            confirmation = console.next();
+
+            if (confirmation.equalsIgnoreCase("Y") || confirmation.equalsIgnoreCase("Y")) {
+                while (true) {
+                    System.out.print("Enter the number of book you would like to return : ");
+                    returnBookNum = console.nextInt();
+
+                    if (returnBookNum >= 1 && returnBookNum <= newBookList.size()) {
+                        Book returnedBook = newBookList.get(returnBookNum - 1);
+                        returnedBook.availability = "AVAILABLE";
+                        returnedBook.patron = "NONE";
+                        bookInterface.saveBook("book.txt");
+                        System.out.println("Book returned successfully");
+                        return;
+                    } else {
+                        System.out.print("Invalid Book");
+                    }
+                }
+            } else if (confirmation.equalsIgnoreCase("N") || confirmation.equalsIgnoreCase("No")) {
+                System.out.print("Enjoy the book");
+                return;
+            } else {
+                System.out.print("Invalid Option, Please Try Again");
+            }
+        }
+    }
 }
 
 class Management {
 
+    public Management() {
+    }
+
+    static Scanner console = new Scanner(System.in);
+
+    public void managerInterface() throws IOException {
+        Book bookInterface = new Book();
+        Patron patronInterface = new Patron();
+
+        Patron patronsList = new Patron();
+        List<Patron> patrons = patronsList.getPatrons();
+
+        Book booksList = new Book();
+        List<Book> books = booksList.getBooks();
+
+        List<Book> newBookList2 = new ArrayList<>();
+
+        String password;
+        String newBookTitle, newBookAuthor, newBookGenre, newBookISBN, newBookAvailability, newBookPatron;
+        String newPatronName, newPatronEmail;
+        int List = 0, Add = 0, Remove = 0, bookCounter = 1, removeBookNum = 0, removePatronID = 0;
+
+        Random IDGenerator = new Random();
+        int newPatronID = IDGenerator.nextInt(1000) + 1;
+
+        System.out.print("Please Enter Password : ");
+        password = console.nextLine();
+
+        if (password.equals("Manager")) {
+            System.out.println(
+                    " 1. Show List of Book / Patron \n 2. Add Book / Patron \n 3. Remove Book / Patron \nEnter [1/2/3]");
+
+            switch (console.nextLine()) {
+                case "1":
+                    while (true) {
+                        System.out.print("1. List of Book / 2. List of Patron [1/2] : ");
+                        List = console.nextInt();
+
+                        if (List == 1) {
+                            for (Book bookList : books) {
+                                System.out.println(bookList);
+                            }
+                            return;
+                        } else if (List == 2) {
+                            for (Patron patronList : patrons) {
+                                System.out.println(patronList);
+                            }
+                            return;
+                        } else {
+                            System.out.println("Invalid Option, Please Try Again");
+                        }
+                    }
+                case "2":
+                    while (true) {
+                        System.out.print("1. Add Book / 2. Add Patron [1/2] : ");
+                        Add = console.nextInt();
+
+                        if (Add == 1) {
+                            System.out.print("Enter Book Title : ");
+                            newBookTitle = console.next();
+                            System.out.print("Enter Book Author : ");
+                            newBookAuthor = console.next();
+                            System.out.print("Enter Book Genre : ");
+                            newBookGenre = console.next();
+                            System.out.print("Enter Book ISBN : ");
+                            newBookISBN = console.next();
+                            System.out.print("Enter Book Availability : ");
+                            newBookAvailability = console.next();
+                            System.out.print("Enter Book Patron : ");
+                            newBookPatron = console.next();
+
+                            System.out.println("Book Added Successfully");
+                            Book newBook = new Book(newBookTitle, newBookAuthor, newBookGenre, newBookISBN,
+                                    newBookAvailability, newBookPatron);
+                            bookInterface.saveBook("book.txt");
+                            return;
+                        } else if (Add == 2) {
+                            System.out.print("Please enter your name : ");
+                            newPatronName = console.next();
+                            System.out.print("Please enter your email : ");
+                            newPatronEmail = console.next();
+                            while (true) {
+                                for (Patron emailChecker : patrons) {
+                                    if (!emailChecker.email.equals(newPatronEmail)) {
+                                        System.out.print("Your Patron ID is " + newPatronID);
+                                        Patron newPatron = new Patron(newPatronName, newPatronEmail, newPatronID);
+                                        System.out.print("Patron Account created Successfully");
+                                        patronInterface.savePatron(newPatron);
+                                        return;
+                                    }
+                                }
+                                System.out.println("Email already exists, Please try again");
+                            }
+                        } else {
+                            System.out.println("Invalid Option, Please Try Again");
+                        }
+                    }
+                case "3":
+                    while (true) {
+                        System.out.print("1. Remove Book / 2. Remove Patron [1/2] : ");
+                        Remove = console.nextInt();
+
+                        if (Remove == 1) {
+                            for (Book bookList : books) {
+                                System.out.println(bookCounter + ". " + bookList);
+                                newBookList2.add(bookList);
+                                bookCounter++;
+                            }
+
+                            while (true) {
+                                System.out.print("Enter the number of book you would like to remove : ");
+                                removeBookNum = console.nextInt();
+
+                                if (removeBookNum >= 1 && removeBookNum <= newBookList2.size()) {
+                                    Book removeBook = newBookList2.get(removeBookNum - 1);
+                                    bookInterface.saveBook("book.txt");
+                                    System.out.println("Book Remove Successfully");
+                                    return;
+                                } else {
+                                    System.out.print("Invalid Book");
+                                }
+                            }
+                        } else if (Remove == 2) {
+                            for (Patron patronList : patrons) {
+                                System.out.println(patronList);
+                            }
+
+                            while (true) {
+                                System.out.print("Enter Patron ID you would like to remove : ");
+                                removePatronID = console.nextInt();
+
+                                for (Patron patronList : patrons) {
+                                    if (patronsList.ID == removePatronID) {
+                                        Patron removedPatron = patrons.remove(removePatronID);
+                                        System.out.print("Patron Account removed Successfully");
+                                        patronInterface.savePatron(removedPatron);
+                                        return;
+                                    }
+                                }
+                                System.out.println("Invalid Patron");
+                            }
+                        } else {
+                            System.out.println("Invalid Option, Please Try Again");
+                        }
+                    }
+                default:
+                    System.out.println("Invalid Option, Please Try Again");
+            }
+        } else {
+            System.out.println("Password Incorrect, Access Denied");
+        }
+    }
 }
