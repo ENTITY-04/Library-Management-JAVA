@@ -63,6 +63,11 @@ class Book {
 
     public Book() {
         this.books = new ArrayList<>();
+        try {
+            bookList("book.txt");
+        } catch (FileNotFoundException e) {
+            System.out.println("No File Loaded");
+        }
     }
 
     public List<Book> getBooks() {
@@ -71,12 +76,15 @@ class Book {
 
     static Scanner console = new Scanner(System.in);
 
-    private void bookList() throws FileNotFoundException {
-        FileReader bookInput = new FileReader("book.txt");
+    public void bookList(String bookFile) throws FileNotFoundException {
+        FileReader bookInput = new FileReader(bookFile);
         Scanner book = new Scanner(bookInput);
 
         while (book.hasNextLine()) {
             String title = book.nextLine();
+            if (title.trim().isEmpty()) {
+                continue;
+            }
             String author = book.nextLine();
             String genre = book.nextLine();
             String ISBN = book.nextLine();
@@ -85,12 +93,16 @@ class Book {
 
             books.add(new Book(title, author, genre, ISBN, availability, patron));
         }
+        book.close();
     }
 
-    public void saveBook(String book) throws IOException {
-        PrintWriter bookWriter = new PrintWriter("book.txt");
-        for (Book bookSave : books) {
-            bookWriter.println(books.toString());
+    public void saveBook(String bookFile) throws IOException {
+        try (PrintWriter bookWriter = new PrintWriter(new FileWriter(bookFile))) {
+            for (Book bookSave : books) {
+                bookWriter.println(bookSave.toString());
+            }
+        } catch (IOException e) {
+            System.out.println("Book Save Unsuccessful");
         }
     }
 
@@ -299,7 +311,7 @@ class ReturnBook {
             System.out.print("Do you want to return the book [Y/N] : ");
             confirmation = console.next();
 
-            if (confirmation.equalsIgnoreCase("Y") || confirmation.equalsIgnoreCase("Y")) {
+            if (confirmation.equalsIgnoreCase("Y") || confirmation.equalsIgnoreCase("Yes")) {
                 while (true) {
                     System.out.print("Enter the number of book you would like to return : ");
                     returnBookNum = console.nextInt();
