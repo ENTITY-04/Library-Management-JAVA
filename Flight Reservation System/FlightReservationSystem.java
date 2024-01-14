@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Menu {
+public class FlightReservationSystem {
   static Scanner console = new Scanner(System.in);
 
   public static void main(String[] args) {
@@ -20,11 +20,11 @@ public class Menu {
       System.out.print("Pick: ");
       switch (console.next().toUpperCase()) {
         case "1":
-          System.out.print("Enter Your Email: ");
+          System.out.print("Enter Your Email : ");
           Email = console.next();
 
           while (true) {
-            System.out.print("Do Your Prefer Standard Class [STD] or First Class [1ST]: ");
+            System.out.print("Do Your Prefer Standard Class [STD] or First Class [1ST] : ");
             desiredClass = console.next().toUpperCase();
             if (desiredClass.equals("STD") || desiredClass.equals("1ST")) {
               break;
@@ -32,13 +32,13 @@ public class Menu {
               System.out.println("Invalid Input");
             }
           }
-          System.out.print("Do Your Prefer Seat By Window [Y|N]: ");
+          System.out.print("Do Your Prefer Seat By Window [Y|N] : ");
           Window = inputPrompt("");
 
-          System.out.print("Do Your Prefer Seat By Aisle [Y|N]: ");
+          System.out.print("Do Your Prefer Seat By Aisle [Y|N] : ");
           Aisle = inputPrompt("");
 
-          System.out.print("Do Your Prefer Seat With Table [Y|N]: ");
+          System.out.print("Do Your Prefer Seat With Table [Y|N] : ");
           Table = inputPrompt("");
 
           while (true) {
@@ -209,7 +209,7 @@ class Booking {
     boolean emailView = false;
 
     while (true) {
-      System.out.print("View Personal Seat Reservation or All Seat Reservation [P|ALL]: ");
+      System.out.print("View Personal Seat Reservation or All Seat Reservation [P|ALL] : ");
       viewOption = console.next();
 
       if (viewOption.equalsIgnoreCase("All")) {
