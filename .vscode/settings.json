@@ -2,8 +2,9 @@
     "code-runner.clearPreviousOutput": true,
     "code-runner.executorMap": {
 
+
         "javascript": "node",
-        "java": "<console clear> && cd $dir && javac $fileName && java $fileNameWithoutExt",
+        "java": "clear && cd $dir && javac $fileName && java $fileNameWithoutExt",
         "c": "clear && cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "zig": "zig run",
         "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
@@ -56,5 +57,6 @@
         "sml": "cd $dir && sml $fileName",
         "mojo": "mojo run"
     },
-    "code-runner.runInTerminal": true
+    "code-runner.runInTerminal": true,
+    "java.debug.settings.console": "integratedTerminal"
 }
