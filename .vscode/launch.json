@@ -29,7 +29,7 @@
                 ".",
                 "${fileDirname}"
             ],
-            "externalConsole": true
+            "externalConsole": true,
         },
         {
             "type": "java",
