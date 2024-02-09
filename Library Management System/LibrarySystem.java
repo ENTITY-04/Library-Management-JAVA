@@ -3,11 +3,13 @@ import java.io.*;
 
 public class LibrarySystem {
     public static void main(String[] args) throws IOException {
+        // Initialise instance for Book, Patron, and Management Class
         Book UI_Book = new Book();
         Patron UI_Patron = new Patron();
         Management UI_Management = new Management();
         Scanner console = new Scanner(System.in);
 
+        // System Main Menu 
         while (true) {
             System.out.println("\nWelcome to Cyber Library");
             System.out.println(
@@ -56,6 +58,7 @@ class Book {
 
     private static List<Book> books;
 
+    // Load Book File
     public Book() {
         this.books = new ArrayList<>();
         try {
@@ -65,6 +68,7 @@ class Book {
         }
     }
 
+    // A method for other class to use for each loop with book file
     public List<Book> getBooks() {
         return books;
     }
@@ -78,7 +82,7 @@ class Book {
         while (book.hasNextLine()) {
             String title = book.nextLine();
             if (title.trim().isEmpty())
-                continue;
+                continue; // .trim() is use to skip white space 
             String author = book.nextLine();
             String genre = book.nextLine();
             String ISBN = book.nextLine();
@@ -90,6 +94,7 @@ class Book {
         book.close();
     }
 
+    // Method specifically use only for adding new book
     public void addBook(Book newBook) throws IOException {
         try (PrintWriter bookWriter = new PrintWriter(new FileWriter("book.txt", true))) {
             bookWriter.println(newBook.toString());
@@ -98,6 +103,7 @@ class Book {
         }
     }
 
+    // Method use for edit or remove existing book 
     public void saveBook(String bookFile, List<Book> books) throws IOException {
         try (PrintWriter bookWriter = new PrintWriter(new FileWriter(bookFile))) {
             for (Book bookSave : books) {
@@ -112,6 +118,7 @@ class Book {
         return title + "\n" + author + "\n" + genre + "\n" + ISBN + "\t" + status + "\t" + patron;
     }
 
+    // Main menu for book 
     public void pageBook() throws IOException {
         while (true) {
             System.out.println(
@@ -139,8 +146,9 @@ class Book {
     }
 
     public void bookBorrow() throws IOException {
-        Patron patronsList = new Patron();
-        List<Patron> patrons = patronsList.getPatrons();
+        Patron patronsList = new Patron(); // Initialise Patron class 
+        // Initialise patrons list from Patron class to use on for each loop and validate patron
+        List<Patron> patrons = patronsList.getPatrons(); 
 
         List<Book> bookBorrowList = new ArrayList<>();
 
@@ -172,6 +180,7 @@ class Book {
                         System.out.print("Please enter your Patron ID : ");
                         patronID = console.nextLine();
 
+                        // Validate Patron 
                         while (true) {
                             for (Patron patronVerify : patrons) {
                                 if (patronVerify.name.equals(patronName)
@@ -197,7 +206,8 @@ class Book {
     }
 
     public void bookReturn() throws IOException {
-        Patron patronsList = new Patron();
+        Patron patronsList = new Patron(); // Initialise Patron class 
+        // Initialise patrons list from Patron class to use on for each loop and validate patron
         List<Patron> patrons = patronsList.getPatrons();
 
         List<Book> bookReturnList = new ArrayList<>();
@@ -206,6 +216,7 @@ class Book {
         int counter = 1, returnBookNum = 0;
         boolean verify = false;
 
+        // Validate Patron
         while (true) {
             System.out.print("Please enter your Patron name : ");
             patronName = console.nextLine();
@@ -233,7 +244,7 @@ class Book {
 
                         if (confirmReturn.equalsIgnoreCase("Y") || confirmReturn.equalsIgnoreCase("Yes")) {
                             while (true) {
-                                System.out.print("Enter the number of the book you would like to return : ");
+                                System.out.print("Enter the Index number of the book you would like to return : ");
                                 returnBookNum = Integer.parseInt(console.nextLine());
 
                                 if (returnBookNum >= 1 && returnBookNum <= bookReturnList.size()) {
@@ -282,6 +293,7 @@ class Patron {
 
     private List<Patron> patrons;
 
+    // Load Patron File
     public Patron() {
         this.patrons = new ArrayList<>();
         try {
@@ -291,6 +303,7 @@ class Patron {
         }
     }
 
+    // A method for other class to use for each loop with patron file
     public List<Patron> getPatrons() {
         return patrons;
     }
@@ -313,6 +326,7 @@ class Patron {
         patron.close();
     }
 
+    // Method specifically use only for adding new patron
     public void addPatron(Patron newPatron) throws IOException {
         try (PrintWriter patronWriter = new PrintWriter(new FileWriter("patron.txt", true))) {
             patronWriter.println(newPatron.toString());
@@ -321,6 +335,7 @@ class Patron {
         }
     }
 
+    // Method use for edit or remove existing patron
     public void savePatron(String patronFile) throws IOException {
         try (PrintWriter patronWriter = new PrintWriter(new FileWriter(patronFile))) {
             for (Patron patronSave : patrons) {
@@ -335,6 +350,7 @@ class Patron {
         return name + "\n" + ID + "\n" + email;
     }
 
+    // Main menu for patron
     public void pagePatron() throws IOException {
         while (true) {
             System.out
@@ -384,6 +400,7 @@ class Patron {
         }
     }
 
+    // Method to view patron account profile 
     public void patronAccount() {
         String patronName, patronID;
         while (true) {
@@ -405,6 +422,7 @@ class Patron {
     }
 }
 
+// For Librarian Manager 
 class Management {
 
     public Management() {
@@ -458,6 +476,7 @@ class Management {
             searchInput = console.nextLine();
 
             if (searchInput.equals("1")) {
+                // Allow manager to search for any book that contain info given
                 System.out.println("Enter Book Title : ");
                 bookTitle = console.nextLine();
 
@@ -466,7 +485,7 @@ class Management {
 
                 System.out.println("Enter Book ISBN : ");
                 bookISBN = console.nextLine();
-
+ 
                 for (Book bookSearch : books) {
                     if ((bookTitle == null || bookSearch.title.toLowerCase().contains(bookTitle.toLowerCase())
                             || bookTitle.isEmpty())
@@ -482,6 +501,7 @@ class Management {
                     }
                 }
             } else if (searchInput.equals("2")) {
+                // Allow manager to search for any patron that contain info given
                 System.out.print("Enter Patron name / None : ");
                 patronName = console.nextLine();
 
@@ -542,6 +562,7 @@ class Management {
         }
     }
 
+    // Method to add new book or patron
     public void addData() throws IOException {
         Book UI_Book = new Book();
         Book booksList = new Book();
@@ -568,6 +589,7 @@ class Management {
                     System.out.print("Enter Book ISBN : ");
                     newISBN = console.next();
 
+                    // To check if the same book already exist 
                     for (Book bookChecker : books) {
                         if (!bookChecker.title.equalsIgnoreCase(newTitle)
                                 && !bookChecker.ISBN.equalsIgnoreCase(newISBN)) {
